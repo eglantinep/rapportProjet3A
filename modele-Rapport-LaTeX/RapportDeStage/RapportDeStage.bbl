@@ -1,0 +1,18 @@
+\begin{thebibliography}{1}
+
+\bibitem{ensicaenURL}
+\color{url} \urlstyle{uko}
+  \underline{\url{http://www.ensicaen.fr/}}\color{noir}.
+
+\bibitem{troisiemeCentenaireNewton}
+R {D}ugas, {L}e troisième centenaire de {N}ewton, \textit{Revue Sci.}
+  \textbf{86} (1948), 111-114.
+
+\bibitem{wordURL}
+\color{url} \urlstyle{uko} \underline{\url{http://word.mvps.org/}}\color{noir}.
+
+\bibitem{theLatexCompanion}
+{M}ichel {G}oosens, {F}rank {M}ittelbach, {A}lexander {S}amarin.\textit{~The
+  {LATEX} companion}. {A}ddison-{W}esley, 1994.
+
+\end{thebibliography}
