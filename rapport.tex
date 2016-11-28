@@ -5,6 +5,7 @@
 \usepackage[francais]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
+\setcounter{secnumdepth}{3}
 
 \geometry{hmargin=2.5cm,vmargin=1.5cm}
 
@@ -125,6 +126,28 @@ Dans les deux sous-parties qui suivent, nous présenterons davantage les méthod
 
 \subsection{Les méthodes d'Identification et Vérification}
 
+\subsubsection{Généralitées}
+Les méthodes d'Identification et de Vérification (ID \& V) fournissent la confiance nécessaire à une association entre le PAN et un Token par des vérification diverses sur le porteur ou sur le compte du porteur. Tout cela pour fournir un cadre fiable de paiment par Token. \\
+Le Token Assurance Level est une donnée importante pour les paiements utilisant des tokens. Ce Token Assurance Level est dérivé de la méthode d'ID \& V utilisée.
+Deux Data Elements sont utilisés pour founir des informations sur le Token Assurance Level et les méthodes d'ID \& V utilisées. Ce sont les champs : 
+\begin{itemize}
+	\item Token Assurance Level
+	\item Token Assurance Data\\
+\end{itemize}
+
+Le Token Service Provider \textbf{DOIT} mettre en place les interfaces nécessaire pour founir ces deux Data Elements.
+Le Token Assurance Level est un nombre compris entre 00 et 99 en fonction du niveau des vérifications effectuées. Le Token Service Provider \textbf{DOIT} également associer le bon Token Assurance Level en fonction des vérifications effectuées.
+
+\subsubsection{Les différentes méthodes}
+Il n'y a pas vraiment de méthodes d'ID \& V imposées, mais le Token Service Provider \textbf{DOIT} implémenter une ou plusieurs méthodes d'ID \& V et \textbf{DOIT} assurer que la méthode requise est employé lors de la génération d'un Token. Certaines étapes de ces vérification peuvent être faites par le Token Service Provider, le Token Requestor ou par une tierce partie. Mais dans le cas où les vérifications ne sont pas effectuées par le Token Service Provider, l'entité ayant effectuée une étape de la vérification \textbf{DOIT} fournir des preuves vérifiables du résultat des vérifications.\\
+Les vérifications mentionnées dans la spécification sont les suivantes:
+\begin{itemize}
+	\item Pas de vérification
+	\item Vérification du compte (Autorisation à 0 ou autres méthodes.)
+	\item Calcul d'un score de risque en utilisant les données du Token Service Provider.
+	\item Calcul d'un score de risque en utilisant en plus des données du réseau de paiement.
+	\item Vérification du porteur (3DSecure par exemple)
+\end{itemize}
 
 \subsection{Les interfaces: Token Service Provider APIs}
 
