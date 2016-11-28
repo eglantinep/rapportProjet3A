@@ -168,9 +168,13 @@ Le schéma ci-dessous résume le déroulement d'une transaction EMV avec Token, 
 
 
 \section{Acquisition, compensation, règlement}
-
+Dans cette partie, nous allons présenter les processus d'acquisition, de compensation et de règlement, qui se déroulent pendant et après la télécollecte.
 
 \subsection{Acquisition et compensation}
+Lors de la phase d'acquisition/compensation, le commerçant envoie d'abord un fichier d'acquisition à sa banque acquéreur. Ce fichier contient le Token, sa date d'expiration, le Token Assurance Level et éventuellement le Token Requestor ID. Ensuite, la banque acquéreur vérifie les éléments de données contenus dans ce fichier et y ajoute le mode d'acceptation pour constituer un fichier de compensation qu'elle va envoyer au réseau de paiement. Tout comme pour la transaction, celui-ci va demander au Token Service Provider de faire le mapping entre le Token et le PAN pour pouvoir ensuite transmettre le fichier de compensation complété à la banque émetteur, qui devra valider ou non la compensation et renvoyer sa réponse au réseau de paiement.\\
+\newline
+Le schéma ci-dessous détaille les champs de données qui transitent lors des phases d'acquisition puis de compensation [Figure 2.6].
+
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.6]{img/CaptureClearing.png}
