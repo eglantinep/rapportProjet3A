@@ -113,12 +113,16 @@ Lors d'une transaction, le token Requestor peut être la banque émetteur, la ba
 
 
 \section{Les Data elements}
+Les Data elements ou éléments de données qui sont utilisés dans une transaction initiée avec un Token, sont présentés dans le schéma ci-dessous [Figure 2.2]. Ils peuvent être obligatoires, conditionnels ou optionnels suivant le message auquel ils appartiennent et suivant l'API utilisée. Tous les réseaux de paiement doivent supporter ces éléments de données lors d'une transaction, pour assurer l'interopérabilité entre les réseaux de paiement.\\
 
+\noindent
+Dans un soucis de clarté du schéma, nous avons seulement représenté les éléments de données qui transitent entre deux entités.\\
+Pour plus de précisions sur ces éléments de données, consulter la partie 4 de la spécification, "Payment Token Specification Data Elements", à l'adresse suivante: \textit{https://www.emvco.com/specifications.aspx?id=263}.
 
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.5]{img/data_elements.png}
-			\caption{\label{DataElements} Eléments de données fournis par une entité à une autre.}			
+			\caption{\label{DataElements} Eléments de données fournis par une entité à une autre pour une transaction avec Token.}			
 \end{figure}
 
 
