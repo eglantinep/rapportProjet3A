@@ -167,8 +167,23 @@ Les vérifications mentionnées dans la spécification sont les suivantes:
 \end{itemize}
 
 \subsection{Les interfaces: Token Service Provider APIs}
+\subsubsection{Généralités}
+Le Token Service provider \textbf{DOIT} mettre en place une manière sécurisée d'intéragir avec les entités utilisant ses services. Cela à travers par example un Web Service, la norme ISO 8583 ou encore des batch.\\
+Le Token Service Provider \textbf{PEUT} implémenter les différentes interfaces et les rendres accessible par les entités voulant utiliser ses services.  Les différentes catégories interfaces sont :
+\begin {itemize}
+	\item Token Request et Assurance
+	\item Token Assurance (ID \& V)
+	\item De-Tokenisation
+	\item Token Routing
+	\item Token Lifecycle Management
+\end{itemize}
+Le Token Service Provider \textbf{DOIT} mettre en place au moins une interface par catégorie.
+\subsubsection{Token Request et Assurance}
+Le Token Service Provider \textbf{DOIT} fournir une methode permetant a un Token Requestor enregistré de demander l'émission d'un Token.
+Le Token Service Provider \textbf{DOIT} mettre en place les controles nécessaires pour générer le Token. De plus, il peut effectuer des opérations d'assurance suplémentaire, dans ce cas, il \textbf{PEUT} indiquer dans sa réponse les mécanismes de vérification efféctués. 
 
 
+\subsubsection{Token Assurance}
 
 \section{Transaction EMV avec Token}
 Dans cette section, nous allons d'abord présenter l'interaction client-commerçant de manière à introduire les différents cas d'usage, impliquant un Token, utilisés dans la spécification. Dans un second temps, nous verrons comment se poursuit la transaction avec le Token, depuis le commerçant vers les autres acteurs de la transaction.
