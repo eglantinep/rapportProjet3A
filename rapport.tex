@@ -125,6 +125,8 @@ Pour plus de précisions sur ces éléments de données, consulter la partie 4 d
 			\caption{\label{DataElements} Eléments de données fournis par une entité à une autre pour une transaction avec Token.}			
 \end{figure}
 
+Le Token Vault est un endroit, appartenant au Token Service Provider, dans lequel sont stockés l'association PAN/Token, le Token Requestor ID ainsi que la date d'expiration du Token.
+
 
 \section{Demande et émission de Token}
 Lors d'une transaction EMV, lorsque le PAN n'est pas déjà lié à un Token valide et qu'un Token est requis, le Token Requestor envoie une demande de génération de Token au Token Service Provider. Cette requête contient donc le PAN et sa date d'expiration, ainsi que le Token Requestor ID. Ensuite, le Token service Provider va se charger d'envoyer une demande d'identification et vérification à la banque émetteur, pour déterminer le Token Assurance Level et le Token Assurance Data. Une fois cette étape validée, le Token Service Provider génère le Token qu'il transmet au Token Requestor, en plus de la date d'expiration du Token, du Token Assurance Level et du Token Assurance Data.\\
@@ -192,7 +194,7 @@ Toutes ces méthodes sont utilisées si, après l'émission d'un Token, le Token
 Le Token Service Provider \textbf{DOIT} mettre en place les contrôles appropriés pour authentifier l'entité qui fait la demande de dé-tokenisation.
 
 \subsubsection{De-Tokenisation avec vérification}
-Le Token Service Provider doit, en plus de la dé-tokenisation classique, effectuer des vérifications complémentaires pour s'assurer que le Token Domain Restriction Controls est bien adapté à la demande qui a été faite.
+Le Token Service Provider doit, en plus de la dé-tokenisation classique, effectuer des vérifications complémentaires pour s'assurer que le Token est bien utilisé dans un des domaines pour lesquels il a été généré. L'ensemble de ces domaines s'appelle le Token Domain Restriction Controls. 
 
 \subsubsection{Token Lifecycle Management}
 Le Token Service Provider \textbf{DOIT} mettre en place des moyens de gérer le cycle de vie d'un Token émis. Ces interfaces peuvent êtres utilisées par de nombreuses entités telles que le réseau de paiement, le Token Requestor, la banque émettrice, etc.\\
