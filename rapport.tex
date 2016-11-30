@@ -184,6 +184,18 @@ Le Token Service Provider \textbf{DOIT} mettre en place les controles nécessair
 
 
 \subsubsection{Token Assurance}
+Ces méthodes sont utilisées si après l'émission d'un Token le Token Requestor veut une mise à jour du niveau d'assurance.
+
+
+\subsubsection{De-Tokenisation}
+Le Token Service Provider \textbf{DOIT} mettre en place les controles appropriés pour authentifier l'entité qui fait la demande de dé-tokenisation.
+
+\subsubsection{De-Tokenisation avec vérification}
+Le Token Service Provider doit en plus de la dé-tokenisation normale effecté des vérification complémentaire pour etre sur que le Token Domain Restriction Controls est bien addapté a la demande faite.
+
+\subsubsection{Token Lifecycle Management}
+Le Token Service Provider \textbf{DOIT} mettre en place des moyens de gerer le cycle de vie d'un Token emis. Ces interfaces peuvent etres utilisées par de nombreuses entités telles que le réseau de paiement, le Token Requestor, la banque emettrice...
+L'implémentation de ces interfaces sont laissés a la discretion du Token Service Provider.
 
 \section{Transaction EMV avec Token}
 Dans cette section, nous allons d'abord présenter l'interaction client-commerçant de manière à introduire les différents cas d'usage, impliquant un Token, utilisés dans la spécification. Dans un second temps, nous verrons comment se poursuit la transaction avec le Token, depuis le commerçant vers les autres acteurs de la transaction.
