@@ -166,36 +166,40 @@ Les vérifications mentionnées dans la spécification sont les suivantes:
 	\item Vérification du porteur (3DSecure par exemple)
 \end{itemize}
 
-\subsection{Les interfaces: Token Service Provider APIs}
 
+\subsection{Les interfaces: Token Service Provider APIs}
 \subsubsection{Généralités}
-Le Token Service provider \textbf{DOIT} mettre en place une manière sécurisée d'intéragir avec les entités utilisant ses services. Cela à travers par example un Web Service, la norme ISO 8583 ou encore des batch.\\
-Le Token Service Provider \textbf{PEUT} implémenter les différentes interfaces et les rendres accessible par les entités voulant utiliser ses services.  Les différentes catégories interfaces sont :
-\begin {itemize}
-	\item Token Request et Assurance
+Le Token Service provider \textbf{DOIT} mettre en place une manière sécurisée d'intéragir avec les entités utilisant ses services, à travers par exemple, un Web Service, la norme ISO 8583 ou encore des batches.\\
+Le Token Service Provider \textbf{PEUT} implémenter les différentes interfaces et les rendre accessibles aux entités voulant utiliser ses services. Les différentes catégories d'interface sont:
+\begin{itemize}
+	\item Token Request et Token Assurance
 	\item Token Assurance (ID \& V)
 	\item De-Tokenisation
 	\item Token Routing
 	\item Token Lifecycle Management
 \end{itemize}
+\noindent
 Le Token Service Provider \textbf{DOIT} mettre en place au moins une interface par catégorie.
 
-\subsubsection{Token Request et Assurance}
-Le Token Service Provider \textbf{DOIT} fournir une méthode permetant à un Token Requestor enregistré de demander l'émission d'un Token.
-Le Token Service Provider \textbf{DOIT} mettre en place les controles nécessaires pour générer le Token. De plus, il peut effectuer des opérations d'assurances suplémentaires, dans ce cas, il \textbf{PEUT} indiquer dans sa réponse les mécanismes de vérifications efféctués. 
+\subsubsection{Token Request et Token Assurance}
+Le Token Service Provider \textbf{DOIT} fournir une méthode permettant, à un Token Requestor qui s'est enregistré auprès de lui, de demander l'émission d'un Token.
+Le Token Service Provider \textbf{DOIT} aussi mettre en place les contrôles nécessaires pour générer le Token. De plus, il peut effectuer des opérations d'assurance supplémentaires. Dans ce cas, il \textbf{PEUT} indiquer dans sa réponse les mécanismes de vérifications utilisés. 
 
 \subsubsection{Token Assurance}
-Ces méthodes sont utilisées si après l'émission d'un Token le Token Requestor veut une mise à jour du niveau d'assurance.
+Toutes ces méthodes sont utilisées si, après l'émission d'un Token, le Token Requestor souhaite faire une mise-à-jour du niveau d'assurance.
 
 \subsubsection{De-Tokenisation}
-Le Token Service Provider \textbf{DOIT} mettre en place les controles appropriés pour authentifier l'entité qui fait la demande de dé-tokenisation.
+Le Token Service Provider \textbf{DOIT} mettre en place les contrôles appropriés pour authentifier l'entité qui fait la demande de dé-tokenisation.
 
 \subsubsection{De-Tokenisation avec vérification}
-Le Token Service Provider doit en plus de la dé-tokenisation normale effecter des vérifications complémentaires pour etre sur que le Token Domain Restriction Controls est bien adapté à la demande faite.
+Le Token Service Provider doit, en plus de la dé-tokenisation classique, effectuer des vérifications complémentaires pour s'assurer que le Token Domain Restriction Controls est bien adapté à la demande qui a été faite.
 
 \subsubsection{Token Lifecycle Management}
-Le Token Service Provider \textbf{DOIT} mettre en place des moyens de gérer le cycle de vie d'un Token emis. Ces interfaces peuvent êtres utilisées par de nombreuses entités telles que le réseau de paiement, le Token Requestor, la banque emettrice...
-L'implémentation de ces interfaces sont laissés à la discretion du Token Service Provider.
+Le Token Service Provider \textbf{DOIT} mettre en place des moyens de gérer le cycle de vie d'un Token émis. Ces interfaces peuvent êtres utilisées par de nombreuses entités telles que le réseau de paiement, le Token Requestor, la banque émettrice, etc.\\
+
+\noindent
+L'implémentation de TOUTES ces interfaces est laissée à la discretion du Token Service Provider.
+
 
 \section{Transaction EMV avec Token}
 Dans cette section, nous allons d'abord présenter l'interaction client-commerçant de manière à introduire les différents cas d'usage, impliquant un Token, utilisés dans la spécification. Dans un second temps, nous verrons comment se poursuit la transaction avec le Token, depuis le commerçant vers les autres acteurs de la transaction.
@@ -245,6 +249,7 @@ Dans le cadre du projet, nous ne nous intéresserons pas à ces trois phases, ma
 \subsection{Acquisition et compensation}
 Lors de la phase d'acquisition/compensation, le commerçant envoie d'abord un fichier d'acquisition à sa banque acquéreur. Ce fichier contient le Token, sa date d'expiration, le Token Assurance Level et éventuellement le Token Requestor ID. Ensuite, la banque acquéreur vérifie les éléments de données contenus dans ce fichier et y ajoute le mode d'acceptation pour constituer un fichier de compensation qu'elle va envoyer au réseau de paiement. Tout comme pour la transaction, celui-ci va demander au Token Service Provider de faire le mapping entre le Token et le PAN pour pouvoir ensuite transmettre le fichier de compensation complété à la banque émetteur, qui devra valider ou non la compensation et renvoyer sa réponse au réseau de paiement.\\
 
+\newpage
 \noindent
 Le schéma ci-dessous détaille les champs de données qui transitent lors des phases d'acquisition puis de compensation [Figure 2.7].
 
