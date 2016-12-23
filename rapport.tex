@@ -5,6 +5,8 @@
 \usepackage[francais]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage{lmodern}
+
 \setcounter{secnumdepth}{3}
 
 \geometry{hmargin=2.5cm,vmargin=1.5cm}
@@ -46,7 +48,7 @@ Le travail qui nous a été demandé concernait surtout l'aspect bancaire, et pl
 \section{Introduction à la Tokenisation}
 \subsection{Définition d'un Token}
 Dans le cadre d'une transaction, un Token est une donnée "jetable", aussi appelée jeton de paiement, permettant de remplacer les données bancaires telles que le PAN (Personal Account Number).\\
-Ainsi, le processus de Tokenisation consiste à générer un Token à partir du PAN et de sa date d'expiration [Figure 1.3].
+Ainsi, le processus de Tokenisation consiste à générer un Token à partir du PAN et de sa date d'expiration [Figure \ref{Tokenisation}].
 
 \begin{figure}[!h]
     \centering
@@ -54,7 +56,7 @@ Ainsi, le processus de Tokenisation consiste à générer un Token à partir du 
 			\caption{\label{Tokenisation} Principe de la Tokenisation.}			
 \end{figure}
 
-Inversement, le processus de Detokenisation permet de récupérer le PAN et sa date d'expiration à partir du Token [Figure 1.4]. 
+Inversement, le processus de Detokenisation permet de récupérer le PAN et sa date d'expiration à partir du Token [Figure \ref{Detokenisation}]. 
 
 \begin{figure}[!h]
     \centering
@@ -93,7 +95,7 @@ En plus d'être un élément de sécurité, l'utilisation des Tokens nous permet
 Dans ce chapitre, nous allons revenir sur notre étude de la spécification pour détailler les différentes phases d'une transaction avec Token de façon claire. Dans un premier temps, nous introduirons deux nouveaux acteurs qui n'interviennent pas dans une transaction EMV classique, mais seulement dans une transaction avec Token. Ensuite, nous présenterons les différents éléments de données avant de nous intéresser de plus près à une transaction EMV avec Token, à travers quatre cas d'usage bien précis.\\
 
 \noindent
-Ci-dessous se trouve le schéma global d'une transaction EMV avec Token [Figure 2.1]. Dans les parties 2.3, 2.4 et 2.5, nous allons découper ce schéma pour le détailler plus amplement.
+Ci-dessous se trouve le schéma global d'une transaction EMV avec Token [Figure \ref{TransactionScheme}]. Dans les parties 2.3, 2.4 et 2.5, nous allons découper ce schéma pour le détailler plus amplement.
 
 \begin{figure}[!ht]
     \centering
@@ -113,7 +115,7 @@ Lors d'une transaction, le token Requestor peut être la banque émetteur, la ba
 
 
 \section{Les Data elements}
-Les Data elements ou éléments de données qui sont utilisés dans une transaction initiée avec un Token, sont présentés dans le schéma ci-dessous [Figure 2.2]. Ils peuvent être obligatoires, conditionnels ou optionnels suivant le message auquel ils appartiennent et suivant l'API utilisée. Tous les réseaux de paiement doivent supporter ces éléments de données lors d'une transaction, pour assurer l'interopérabilité entre les réseaux de paiement.\\
+Les Data elements ou éléments de données qui sont utilisés dans une transaction initiée avec un Token, sont présentés dans le schéma ci-dessous [Figure \ref{DataElements}]. Ils peuvent être obligatoires, conditionnels ou optionnels suivant le message auquel ils appartiennent et suivant l'API utilisée. Tous les réseaux de paiement doivent supporter ces éléments de données lors d'une transaction, pour assurer l'interopérabilité entre les réseaux de paiement.\\
 
 \noindent
 Dans un soucis de clarté du schéma, nous avons seulement représenté les éléments de données qui transitent entre deux entités.\\
@@ -132,7 +134,7 @@ Le Token Vault est un endroit, appartenant au Token Service Provider, dans leque
 Lors d'une transaction EMV, lorsque le PAN n'est pas déjà lié à un Token valide et qu'un Token est requis, le Token Requestor envoie une demande de génération de Token au Token Service Provider. Cette requête contient donc le PAN et sa date d'expiration, ainsi que le Token Requestor ID. Ensuite, le Token service Provider va se charger d'envoyer une demande d'identification et vérification à la banque émetteur, pour déterminer le Token Assurance Level et le Token Assurance Data. Une fois cette étape validée, le Token Service Provider génère le Token qu'il transmet au Token Requestor, en plus de la date d'expiration du Token, du Token Assurance Level et du Token Assurance Data.\\
 
 \noindent
-Le schéma suivant résume la demande et l'émission d'un Token [Figure 2.3].
+Le schéma suivant résume la demande et l'émission d'un Token [Figure \ref{DemandeEmissionToken}].
 
 \begin{figure}[!ht]
     \centering
@@ -210,7 +212,7 @@ Dans cette section, nous allons d'abord présenter l'interaction client-commerç
 Dans la spécification, l'interaction client - commerçant, lors d'une transaction EMV avec Token, est présentée à travers les paiements NFC mobile, par QR code, par wallet et via les sites de e-Commerce.\\
 
 \noindent
-Ce dernier cas est d'ailleurs un peu particulier puisque, lorsque le client fait des achats sur le site d'un commerçant pour la première fois, celui-ci va lui demander de lui envoyer le PAN [Figure 2.4]. En général, le client doit remplir un formulaire avec les données inscrites sur sa carte. Le PAN ne sera pas stocké par le commerçant mais celui-ci va directement contacter le Token Requestor pour qu'il fasse une demande de génération de Token. Par la suite, c'est le Token qui sera stocké par le commerçant. C'est ce qu'on appelle le Card-on-File. Ainsi, le client est en quelque sorte enregistré auprès du commerçant, et lorsqu'il fera d'autres achats sur ce site, le commerçant utilisera le Token lié au PAN du client, qu'il aura conservé dans un fichier. Ici, c'est donc côté commerçant qu'est stocké le Token.\\
+Ce dernier cas est d'ailleurs un peu particulier puisque, lorsque le client fait des achats sur le site d'un commerçant pour la première fois, celui-ci va lui demander de lui envoyer le PAN [Figure \ref{CardOnFile}]. En général, le client doit remplir un formulaire avec les données inscrites sur sa carte. Le PAN ne sera pas stocké par le commerçant mais celui-ci va directement contacter le Token Requestor pour qu'il fasse une demande de génération de Token. Par la suite, c'est le Token qui sera stocké par le commerçant. C'est ce qu'on appelle le Card-on-File. Ainsi, le client est en quelque sorte enregistré auprès du commerçant, et lorsqu'il fera d'autres achats sur ce site, le commerçant utilisera le Token lié au PAN du client, qu'il aura conservé dans un fichier. Ici, c'est donc côté commerçant qu'est stocké le Token.\\
 
 \begin{figure}[!ht]
     \centering
@@ -218,17 +220,17 @@ Ce dernier cas est d'ailleurs un peu particulier puisque, lorsque le client fait
 			\caption{\label{CardOnFile} Interaction client-commerçant pour le cas d'usage Card-on-file.}			
 \end{figure}
 
-Pour les trois autres cas d'usage, le Token est conservé côté client, c'est-à-dire, stocké dans l'appareil du client, qui est son téléphone mobile dans la plupart des cas. En effet, lors d'une transaction, c'est le client qui envoie au commerçant le Token, sa date d'expiration, le Token cryptogram et éventuellement le Token Requestor ID [Figure 2.5].\\
+Pour les trois autres cas d'usage, le Token est conservé côté client, c'est-à-dire, stocké dans l'appareil du client, qui est son téléphone mobile dans la plupart des cas. En effet, lors d'une transaction, c'est le client qui envoie au commerçant le Token, sa date d'expiration, le Token cryptogram et éventuellement le Token Requestor ID [Figure \ref{ClientCommercant}].\\
 A noter également que, dans le cas du QR code, le client transmet aussi les données du QR code au commerçant. Dans le cas du NFC mobile, il peut y avoir des échanges de données avec un cloud au préalable.
 
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.6]{img/interaction_client-commercant2.png}
-			\caption{\label{ClientCommerçant} Interaction client-commerçant pour les cas d'usage: NFC mobile, Wallet, QR Code.}			
+			\caption{\label{ClientCommercant} Interaction client-commerçant pour les cas d'usage: NFC mobile, Wallet, QR Code.}			
 \end{figure}
 
 \subsection{Côté commerçant - autres acteurs de la transaction}
-Une fois la transaction engagée entre le client et le commerçant, ce dernier envoie une demande d'autorisation à sa banque acquéreur et lui transmet les données que le client lui a envoyé ainsi que le Point Of Sell Entry Mode ou mode d'acceptation [Figure 2.6]. Dans le cas du e-Commerce, l'identifiant du commerçant est également transmis à la banque acquéreur.\\
+Une fois la transaction engagée entre le client et le commerçant, ce dernier envoie une demande d'autorisation à sa banque acquéreur et lui transmet les données que le client lui a envoyé ainsi que le Point Of Sell Entry Mode ou mode d'acceptation [Figure \ref{CommercantAutresActeurs}]. Dans le cas du e-Commerce, l'identifiant du commerçant est également transmis à la banque acquéreur.\\
 Ensuite, celle-ci va rediriger toutes ces données vers le réseau de paiement, qui va alors contacter le Token Service Provider pour que celui-ci fasse l'association entre le Token et le PAN correspondant. Le Token Service Provider renvoie donc le PAN au réseau de paiement, mais aussi le Token Assurance Data et le Token Assurance Level. C'est la phase de detokenisation. Ainsi, le réseau de paiement va envoyer les données qu'il a reçu de la banque acquéreur et du Token Service Provider à la banque émetteur, c'est-à-dire, le couple PAN/Token et les données correspondantes. La banque émetteur reçoit donc la demande d'autorisation et peut ou non la valider.\\
 Enfin, le résultat de la demande d'autorisation et le PAN sont retransmis au réseau de paiement qui va remplacer le PAN par le Token correspondant, avant de faire recirculer ces données vers la banque acquéreur, qui va les transmettre au commerçant.\\
 
@@ -238,12 +240,12 @@ Le schéma ci-dessous résume le déroulement d'une transaction EMV avec Token, 
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.6]{img/interaction_commercant-autres.png}
-			\caption{\label{CommerçantAutresActeurs} Interaction commerçant-autres acteurs de la transaction.}			
+			\caption{\label{CommercantAutresActeurs} Interaction commerçant-autres acteurs de la transaction.}			
 \end{figure}
 
 
-\section{Acquisition, compensation, règlement}
-Dans cette partie, nous allons présenter les processus d'acquisition, de compensation et de règlement, qui se déroulent pendant et après la télécollecte.\\
+\section{Acquisition, compensation, gestion des impayés}
+Dans cette partie, nous allons présenter les processus d'acquisition, de compensation et de gestion des impayés, qui se déroulent pendant et après la télécollecte.\\
 
 \noindent
 Dans le cadre du projet, nous ne nous intéresserons pas à ces trois phases, mais il est nécessaire de les détailler ici puisqu'elles sont présentées dans la spécification.
@@ -253,7 +255,7 @@ Lors de la phase d'acquisition/compensation, le commerçant envoie d'abord un fi
 
 \newpage
 \noindent
-Le schéma ci-dessous détaille les champs de données qui transitent lors des phases d'acquisition puis de compensation [Figure 2.7].
+Le schéma ci-dessous détaille les champs de données qui transitent lors des phases d'acquisition puis de compensation [Figure \ref{CaptureClearing}].
 
 \begin{figure}[!ht]
     \centering
@@ -261,16 +263,16 @@ Le schéma ci-dessous détaille les champs de données qui transitent lors des p
 			\caption{\label{CaptureClearing} Acquisition et compensation d'une transaction réalisée avec un Token.}			
 \end{figure}
 
-\subsection{Règlement}
-Après avoir validé la transaction et s'être assurée qu'elle avait bien les droits de règlement appropriés, la banque émetteur fournit le PAN, le Token et éventuellement le Token Requestor ID au réseau de paiement. Celui-ci envoie alors le PAN au Token Service Provider qui va effectuer un certain nombre de vérifications sur le Token et sur le mapping PAN/Token, comme par example, s'assurer de la validité du Token ou de l'association avec le PAN. Ensuite, le réseau de paiement transmet le rapport de règlement, contenant le Token, à la banque acquéreur qui le validera ou non.\\
+\subsection{Gestion des impayés}
+En cas de transaction impayée, la banque émetteur fournit le PAN, le Token et éventuellement le Token Requestor ID au réseau de paiement. Celui-ci envoie alors le PAN au Token Service Provider qui va effectuer un certain nombre de vérifications sur le Token et sur le mapping PAN/Token, comme par exemple, s'assurer de la validité du Token ou de l'association avec le PAN. Ensuite, le réseau de paiement transmet la demande de gestion de l'impayé, contenant le Token, à la banque acquéreur qui enquêtera pour savoir si elle accepte ou non cette requête.\\
 
 \noindent
-Le schéma qui suit représente la phase de règlement vue précédement [Figure 2.8].
+Le schéma qui suit représente la phase de gestion des impayés vue précédement [Figure \ref{Impayes}].
 
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.6]{img/Chargeback.png}
-			\caption{\label{Reglement} Phase de règlement effectuée après une transaction avec Token.}			
+			\caption{\label{Impayes} Phase de gestion des impayés effectuée après une transaction avec Token.}			
 \end{figure}
 
 \end{document}
