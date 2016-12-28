@@ -6,13 +6,69 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{lmodern}
+\usepackage{fullpage}
+\usepackage{eso-pic}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\blap}[1]{\vbox to 0pt{#1\vss}}
+\newcommand\AtUpperLeftCorner[3]{%
+  \put(\LenToUnit{#1},\LenToUnit{\dimexpr\paperheight-#2}){\blap{#3}}%
+}
+\newcommand\AtUpperRightCorner[3]{%
+  \put(\LenToUnit{\dimexpr\paperwidth-#1},\LenToUnit{\dimexpr\paperheight-#2}){\blap{\llap{#3}}}%
+}
 
 \setcounter{secnumdepth}{3}
-
 \geometry{hmargin=2.5cm,vmargin=1.5cm}
+\title{\large{"Transport d'informations contextuelles au sein d'une transaction EMV"}}
+\author{Eglantine PELLET - Pierre LE BECACHEL\\3A Spécialité Informatique\\Année 2016/2017}
+\date{\today}
+\makeatletter
+
 
 
 \begin{document}
+
+\begin{titlepage}
+    \enlargethispage{2cm}
+ 
+    \AddToShipoutPicture{
+        \AtUpperLeftCorner{1.2cm}{0.7cm}{\includegraphics[width=6.3cm]{img/onewave.png}}
+        \AtUpperRightCorner{1.5cm}{1cm}{\includegraphics[width=6.5cm]{img/ensicaen.jpg}}
+    }
+ 
+    \begin{center}
+        \vspace*{8cm}
+				\textbf{\Huge{Rapport de projet\\}}
+				\vspace*{1cm}
+				\textbf{\LARGE{One Wave}\\}
+				\vspace*{0.3cm}
+        \textbf{\@title}
+        \HRule
+        \vspace*{0.5cm}
+        \textbf{\@author} 
+    \end{center}
+ 
+    \vspace*{8.5cm}
+ 
+    \begin{center}
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/footer.PNG}}
+    \end{center}
+ 
+\end{titlepage}
+\ClearShipoutPicture
+
+\chapter*{Remerciements}
+Nous tenons à remercier les personnes qui nous ont permis de travailler sur ce projet de 3ème année d'étude et de rédiger ce rapport final.\\
+
+\noindent
+Tout d'abord, nous remercions \textbf{Léonard Dallot}, qui aura été notre tuteur côté entreprise, pour nous avoir encadrés et guidés pendant ces quatre derniers mois.\\ 
+
+\noindent
+Nous remercions également \textbf{Patrick Lacharme}, notre tuteur à l'école, pour ses indications et ses conseils.\\
+
+\noindent
+Enfin, nous remercions l'ensemble de l'équipe de One Wave pour sa confiance et pour son accueil chaleureux lors de nos visites à Rennes.
 
 
 
