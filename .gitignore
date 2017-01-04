@@ -1,4 +1,4 @@
 *
 !.gitignore
-!/img/*
+!./img/*
 !rapport.tex
