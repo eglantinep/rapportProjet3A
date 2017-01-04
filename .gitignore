@@ -1,4 +1,7 @@
-*
-!.gitignore
-!./img/*
-!rapport.tex
+*.aux
+*.bbl
+*.blg
+*.log
+*.pdf
+*.toc
+*.gz
