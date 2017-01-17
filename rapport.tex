@@ -8,6 +8,8 @@
 \usepackage{lmodern}
 \usepackage{fullpage}
 \usepackage{eso-pic}
+\usepackage{fancyhdr}
+\usepackage{subcaption}
 
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -20,11 +22,25 @@
 }
 
 \setcounter{secnumdepth}{3}
-\geometry{hmargin=2.5cm,vmargin=1.5cm}
+\geometry{hmargin=2.5cm,vmargin=0.5cm}
 \title{\large{"Transport d'informations contextuelles au sein d'une transaction EMV"}}
 \author{Eglantine PELLET - Pierre LE BECACHEL\\3A Spécialité Informatique\\Année 2016/2017}
 \date{\today}
 \makeatletter
+
+
+\setlength{\headsep}{13pt} % Entre le haut de page et le texte
+\setlength{\textheight}{708pt} % Hauteur de la zone de texte (25cm)
+
+
+% Headers et pieds de page
+\pagestyle{fancyplain}
+\fancyhf{}
+\renewcommand\headrulewidth{0pt}
+\fancyhead[L]{\includegraphics[width=2cm]{img/onewave.png}}
+\fancyhead[C]{\scriptsize{One Wave - Rapport de projet\\E. Pellet - P. Le Bécachel\\3A Informatique - 2016/2017}}
+\fancyhead[R]{\includegraphics[width=2cm]{img/ensicaen.jpg}}
+
 
 
 
@@ -50,7 +66,7 @@
         \textbf{\@author} 
     \end{center}
  
-    \vspace*{8.5cm}
+    \vspace*{9.5cm}
  
     \begin{center}
         \makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/footer.PNG}}
@@ -58,6 +74,8 @@
  
 \end{titlepage}
 \ClearShipoutPicture
+
+
 
 \chapter*{Remerciements}
 Nous tenons à remercier les personnes qui nous ont permis de travailler sur ce projet de 3ème année d'étude et de rédiger ce rapport final.\\
@@ -339,12 +357,46 @@ Le schéma qui suit représente la phase de gestion des impayés vue précédeme
 
 
 \chapter{Implémentation d'un Token Service Provider}
+La lecture de la spécification et les besoins du projet One Wave nous ont amenés à implémenter un Token Service Provider. Dans la suite de ce chapitre, nous allons présenter l'architecture de notre solution et expliquer nos choix d'implémentation.
 
 \section{Architecture du projet}
+Tout est implémenté en Java, avec pour contrainte de pouvoir être embarqué sur une puce par la suite.\\
+Le schéma ci-dessous présente l'architecture générale du projet, découpé en quatre modules [Figure \ref{Architecture}].
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.4]{img/architecture.png}
+			\caption{\label{Architecture} Architecture générale du projet.}			
+\end{figure}
+
+\noindent
+Nous allons maintenant expliquer plus en détails cette architecture.
+
 \subsection{Les différents modules}
+\noindent
+\textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.\\
+
+\noindent
+\textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.\\
+
+\noindent
+\textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.\\
+
+\noindent
+\textbf{Token Requestor}: Implémenté pour la démonstration, il interroge le Tokenizer et/ou le Detokenizer.
+
 \subsection{La programmation côté serveur}
-\subsection{AES et RSA}
+Pour fonctionner, ces modules ont besoin d'interagir avec l'extérieur (demande de Tokenisation au Tokenizer, etc.). Nous avons donc crée un serveur pour la Tokenisation et un pour la Detokenisation. Nous avons aussi utilisé le Token Requestor comme client pour pouvoir envoyer des requêtes à ces serveurs.
+
+\subsubsection{AES et RSA}
+Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec la clé publique du Tokenizer et donc de retrouver le PAN correspondant.\\
+Par le biais du Token Service Provider, il est possible d'étendre notre modélisation à d'autres systèmes de chiffrement, puisque ce module comporte une interface qui implémente un Tokenizer et un Detokenizer pour chacun de ces systèmes.
+
+\subsection{Les structures de données}
+Nous avons utilisé des tableau d'octets pour représenter les données définies dans la spécification car il s'agit du format standard pour échanger des données. Nous avions commencé par utiliser des chaînes de caractères mais cette modélisation ne permettait pas de manipuler les données membres à nos souhaits.
+
 \subsection{Les classes utilitaires}
+Nous avons crée un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires nous permettant d'éviter la duplication de code et de simplifier le traitement des données. Entre autres, elles s'occupent du stockage des clés, de petits traitements effectués sur les tableaux d'octets, etc.
 
 
 \section{Contrôle de qualité}
@@ -357,13 +409,69 @@ Le schéma qui suit représente la phase de gestion des impayés vue précédeme
 
 
 \chapter{Gestion de projet}
+L'aboutissement de ce projet repose en partie sur notre organisation et sur le choix de nos outils de travail. 
 
 \section{Organisation de l'équipe projet}
+Pendant la phase d'étude de la spécification, nous avons fait une lecture chacun de notre côté puis nous avons travaillé ensemble sur le résumé présenté dans le chapitre II.\\
+Au moment de commencer l'implémentation du Token Service Provider, nous nous sommes d'abord mis d'accord avec notre tuteur entreprise sur l'architecture à implémenter, puis nous nous sommes répartis les différents modules:\\
+
+\begin{itemize}
+	\item Eglantine: Detokenizer.
+	\item Pierre: Tokenizer, Token Service Provider.
+\end{itemize}
+
+~\\
+\noindent
+Nous avons ensuite travaillé ensemble sur le Token Requestor et sur la programmation côté serveur.
+
 \section{Les outils de gestion de projet}
+Pour l'organisation des tâches au sein du groupe nous avons utilisé \textbf{Trello} pendant la phase d'étude de la spécification. Ci-dessous se trouve une capture d'écran prise pendant cette période et montrant comment nous nous sommes organisés [Figure \ref{Trello}]. 
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.46]{img/trello.PNG}
+			\caption{\label{Trello} L'organisation des tâches avec Trello.}			
+\end{figure}
+
+\newpage
+\noindent
+Nous avons aussi utilisé \textbf{draw.io} pour construire tous les schémas présents dans le rapport et dans les présentations orales.
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.2]{img/draw.png}
+			\caption{\label{Draw} draw.io.}			
+\end{figure}
+
+\noindent
+Pour toute la partie implémentation du Token Service Provider nous nous sommes servis de l'IDE Java \textbf{IntelliJ}, développé par \textbf{JetBrains}, dont nous avons pu obtenir une licence gratuitement grâce à notre statut d'étudiant.
+
+\begin{figure}[!h]
+		\centering
+    \begin{subfigure}[b]{0.2\textwidth}
+        \includegraphics[width=\textwidth]{img/intellij.jpg}
+        \caption{IntelliJ.}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.2\textwidth}
+        \includegraphics[width=\textwidth]{img/jetbrains.png}
+        \caption{JetBrains.}
+    \end{subfigure}
+\end{figure}
+
+\noindent
+Cet IDE intègre un menu dédié à la gestion des VCS (Version Control System), ce qui nous a permis d'interagir facilement avec le dépôt Git que nous avions en commun avec notre tuteur entreprise. De cette manière, nous avons pu lui mettre tout le code source à disposition pour qu'il ait directement accès au prototype.
+
+
 \section{Rencontres avec les tuteurs et le client}
+Nous avons fait le point avec notre client/tuteur, Léonard Dallot, par Skype toutes les semaines, pour lui présenter les dernières progressions et programmer les tâches à réaliser pour la semaine suivante. La première séance a été consacrée à l'établissement d'un planning de travail pour toute la période de réalisation du projet. Nous avons d'ailleurs réussi à nous tenir à ce planning de bout en bout. Nous avons également eu l'occasion de nous déplacer à Rennes les semaines précédent les soutenances finale et de mi-parcours, pour présenter notre travail à toute l'équipe de One Wave.\\
+
+Nous avons aussi rencontré notre tuteur école, Patrick Lacharme, certains mercredi en fonction du travail effectué d'une semaine sur l'autre. Cela nous a permis d'être guidés, notamment sur le plan cryptographique avec le choix d'utiliser RSA et AES, et d'obtenir quelques conseils pour la rédaction du rapport et des présentations orales.\\
+
+A chaque rencontre avec l'un ou l'autre de nos tuteurs, nous avons présenté un prototype fonctionnel et toujours un peu plus évolué. Ceci nous a permis de ne pas perdre de temps au niveau du planning défini au tout début du projet et de ne pas reporter certaines tâches à la semaine suivante.
 
 
 
 \chapter*{Conclusion}
+
 
 \end{document}
