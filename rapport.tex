@@ -400,12 +400,37 @@ Nous avons crée un module \textit{Utils} dans lequel se trouvent un certain nom
 
 
 \section{Contrôle de qualité}
+Nous avons souhaité tester notre code source à chaque nouvelle implémentation, de manière à toujours avoir un résultat fonctionnel.  
+
 \subsection{Les tests unitaires}
+Dans un premier temps, nous avons fait des tests unitaires sur chacune des classes des modules Tokenizer, Detokenizer et Token Service Provider (sauf sur les classes serveur du Tokenizer et du Detokenizer). Nous avons essayé de tester un maximum de lignes de code bien qu'il soit difficile de tester les blocs try/catch. Pour ces trois modules, nous avons donc un taux de coverage très élevé.\\
+Nous n'avons pas fait de test unitaire ni sur les classes utilitaires, puisque nous nous en sommes servis dans les classes de tests, ni sur le module Token Requestor car nous l'utilisons seulement pour la démonstration et parce qu'il ne fait pas partie du rendu final.\\
+A ce jour, nous avons 19 tests unitaires, tous au vert.
+
 \subsection{Les tests d'intégration}
+Nous nous sommes servis du Token Service Provider pour réaliser des tests d'intégration et nous assurer du bon interfaçage entre les modules Tokenizer et Detokenizer.\\
+En résumé, nous avons crée des PAN que nous avons ensuite donnés au Token Service Provider pour que celui-ci demande au Tokenizer de tokeniser puis au Detokenizer de detokeniser, une fois les Tokens correspondants générés. A la fin, nous avons fait une comparaison entre le PAN retrouvé après Detokenisation et le PAN de départ pour confirmer le bon fonctionnement des modules concernés. 
 
+\section{Démonstration finale}
+Les trois captures d'écran ci-dessous montrent les requêtes envoyées par le Token Requestor qui arrivent aux serveurs de Tokenisation et de Detokenisation, avec réception respectivement du PAN et du Token, et renvoi de ceux-ci au Token Requestor. Toutes ces requêtes sont envoyées à intervalles de temps aléatoires, au serveur qui leur correspond, pour mieux simuler une situation réelle. 
 
-\section{Traces d'exécution du rendu final}
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.49]{img/client_tokenRequestor.png}
+			\caption{\label{Trello} Envoi des requêtes de Tokenisation/Detokenisation et réception des PANs/Tokens correspondants par le Token Requestor.}			
+\end{figure}
 
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.49]{img/serveur_tokenizer.png}
+			\caption{\label{Trello} Réception des PANs, Tokenisation et envoi des Tokens correspondants par le serveur de Tokenisation.}			
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.49]{img/serveur_detokenizer.png}
+			\caption{\label{Trello} Réception des Tokens, Detokenisation et envoi des PANs correspondants par le serveur de Detokenisation.}			
+\end{figure}
 
 
 \chapter{Gestion de projet}
