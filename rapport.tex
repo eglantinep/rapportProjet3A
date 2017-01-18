@@ -396,20 +396,20 @@ Par le biais du Token Service Provider, il est possible d'étendre notre modéli
 Nous avons utilisé des tableau d'octets pour représenter les données définies dans la spécification car il s'agit du format standard pour échanger des données. Nous avions commencé par utiliser des chaînes de caractères mais cette modélisation ne permettait pas de manipuler les données membres à nos souhaits.
 
 \subsection{Les classes utilitaires}
-Nous avons crée un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires nous permettant d'éviter la duplication de code et de simplifier le traitement des données. Entre autres, elles s'occupent du stockage des clés, de petits traitements effectués sur les tableaux d'octets, etc.
+Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires. Celles-ci s'occupent du stockage des clés, de petits traitements effectués sur les tableaux d'octets, etc., ce qui permet d'éviter la duplication de code et de simplifier le traitement des données. 
 
 
 \section{Contrôle de qualité}
 Nous avons souhaité tester notre code source à chaque nouvelle implémentation, de manière à toujours avoir un résultat fonctionnel.  
 
 \subsection{Les tests unitaires}
-Dans un premier temps, nous avons fait des tests unitaires sur chacune des classes des modules Tokenizer, Detokenizer et Token Service Provider (sauf sur les classes serveur du Tokenizer et du Detokenizer). Nous avons essayé de tester un maximum de lignes de code bien qu'il soit difficile de tester les blocs try/catch. Pour ces trois modules, nous avons donc un taux de coverage très élevé.\\
-Nous n'avons pas fait de test unitaire ni sur les classes utilitaires, puisque nous nous en sommes servis dans les classes de tests, ni sur le module Token Requestor car nous l'utilisons seulement pour la démonstration et parce qu'il ne fait pas partie du rendu final.\\
-A ce jour, nous avons 19 tests unitaires, tous au vert.
+Dans un premier temps, des tests unitaires ont été implémentés sur chacune des classes des modules Tokenizer, Detokenizer et Token Service Provider (sauf sur les classes serveur du Tokenizer et du Detokenizer). Nous avons essayé de tester un maximum de lignes de code bien qu'il soit difficile de tester les blocs try/catch. Pour ces trois modules, le taux de coverage est donc très élevé.\\
+Aucun test unitaire n'a été crée ni pour les classes utilitaires, puisqu'elles sont utilisées dans les classes de tests, ni sur le module Token Requestor car il a été implémenté seulement pour la démonstration et parce qu'il ne fait pas partie du rendu final.\\
+A ce jour, 19 tests unitaires existent et ils sont tous au vert.
 
 \subsection{Les tests d'intégration}
-Nous nous sommes servis du Token Service Provider pour réaliser des tests d'intégration et nous assurer du bon interfaçage entre les modules Tokenizer et Detokenizer.\\
-En résumé, nous avons crée des PAN que nous avons ensuite donnés au Token Service Provider pour que celui-ci demande au Tokenizer de tokeniser puis au Detokenizer de detokeniser, une fois les Tokens correspondants générés. A la fin, nous avons fait une comparaison entre le PAN retrouvé après Detokenisation et le PAN de départ pour confirmer le bon fonctionnement des modules concernés. 
+Le Token Service Provider a servi à réaliser les tests d'intégration et à nous assurer du bon interfaçage entre les modules Tokenizer et Detokenizer.\\
+En résumé, nous avons crée des PAN que nous avons ensuite donnés au Token Service Provider pour que celui-ci demande au Tokenizer de tokeniser puis au Detokenizer de detokeniser, une fois les Tokens correspondants générés. A la fin, une comparaison est faite entre le PAN retrouvé après Detokenisation et le PAN de départ pour confirmer le bon fonctionnement des modules concernés. 
 
 \section{Démonstration finale}
 Les trois captures d'écran ci-dessous montrent les requêtes envoyées par le Token Requestor qui arrivent aux serveurs de Tokenisation et de Detokenisation, avec réception respectivement du PAN et du Token, et renvoi de ceux-ci au Token Requestor. Toutes ces requêtes sont envoyées à intervalles de temps aléatoires, au serveur qui leur correspond, pour mieux simuler une situation réelle. 
@@ -488,15 +488,17 @@ Cet IDE intègre un menu dédié à la gestion des VCS (Version Control System),
 
 
 \section{Rencontres avec les tuteurs et le client}
-Nous avons fait le point avec notre client/tuteur, Léonard Dallot, par Skype toutes les semaines, pour lui présenter les dernières progressions et programmer les tâches à réaliser pour la semaine suivante. La première séance a été consacrée à l'établissement d'un planning de travail pour toute la période de réalisation du projet. Nous avons d'ailleurs réussi à nous tenir à ce planning de bout en bout. Nous avons également eu l'occasion de nous déplacer à Rennes les semaines précédent les soutenances finale et de mi-parcours, pour présenter notre travail à toute l'équipe de One Wave.\\
+Nous avons fait le point avec notre client/tuteur, Léonard Dallot, par Skype toutes les semaines, pour lui présenter les dernières progressions et programmer les tâches à réaliser pour la semaine suivante. La première séance a été consacrée à l'établissement d'un planning de travail pour toute la période de réalisation du projet. Ce planning a d'ailleurs été tenu de bout en bout. Nous avons également eu l'occasion de nous déplacer à Rennes les semaines précédent les soutenances finale et de mi-parcours, pour présenter notre travail à toute l'équipe de One Wave.\\
 
-Nous avons aussi rencontré notre tuteur école, Patrick Lacharme, certains mercredi en fonction du travail effectué d'une semaine sur l'autre. Cela nous a permis d'être guidés, notamment sur le plan cryptographique avec le choix d'utiliser RSA et AES, et d'obtenir quelques conseils pour la rédaction du rapport et des présentations orales.\\
+Les rencontres avec notre tuteur école, Patrick Lacharme, se sont faites certains mercredi en fonction du travail effectué d'une semaine sur l'autre. Cela nous a permis d'être guidés, notamment sur le plan cryptographique avec le choix d'utiliser RSA et AES, et d'obtenir quelques conseils pour la rédaction du rapport et des présentations orales.\\
 
-A chaque rencontre avec l'un ou l'autre de nos tuteurs, nous avons présenté un prototype fonctionnel et toujours un peu plus évolué. Ceci nous a permis de ne pas perdre de temps au niveau du planning défini au tout début du projet et de ne pas reporter certaines tâches à la semaine suivante.
+A chaque rencontre avec l'un ou l'autre de nos tuteurs, nous avons présenté un prototype fonctionnel et toujours un peu plus évolué. Ceci nous a évité de perdre du temps au niveau du planning défini au tout début du projet et de devoir reporter certaines tâches à la semaine suivante.
 
 
 
 \chapter*{Conclusion}
+Bien que la spécification EMVCo portant sur la Tokenisation soit parfois un peu longue et fastidieuse à lire, elle nous a permis de nous familiariser avec le sujet. Nous avons beaucoup appris sur le fonctionnement de la Tokenisation/Detokenisation et sur le parcours des Tokens ainsi générés. De ce fait, le travail d'implémentation du Token Service Provider a pu démarrer de très bon pied, et le projet a pu être terminé en temps et en heure avec un prototype fonctionnel, répondant aux demandes de l'équipe de One Wave. Nous nous sommes appliqués à produire un code propre, qui pourra par la suite être repris pour évolution, et qui répond aux principes du génie logiciel puisqu'il est fermé aux modifications et ouvert aux extensions.\\
+Enfin, nous tenons à remercier une dernière fois nos tuteurs pour nous avoir guidés et pour nous avoir suivis régulièrement. Nous remercions également l'équipe de One Wave pour nous avoir accordé leur confiance pendant ces quelques mois.
 
 
 \end{document}
