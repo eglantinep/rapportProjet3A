@@ -365,16 +365,16 @@ La lecture de la spécification et les besoins du projet One Wave nous ont amen�
 
 \section{Architecture du projet}
 Tout est implémenté en Java, avec pour contrainte de pouvoir être embarqué sur une puce par la suite.\\
-Le schéma ci-dessous présente l'architecture générale du projet, découpé en quatre modules [Figure \ref{Architecture}].
+Le diagramme de classe ci-dessous présente l'architecture générale du projet, découpé en quatre modules [Figure \ref{Architecture}].
 
 \begin{figure}[!ht]
     \centering
 			\includegraphics[scale=0.4]{img/architecture.png}
-			\caption{\label{Architecture} Architecture générale du projet.}			
+			\caption{\label{Architecture} Diagramme de classe de l'architecture du projet.}			
 \end{figure}
 
 \noindent
-Nous allons maintenant expliquer plus en détails cette architecture.
+Nous allons maintenant expliquer plus en détails cette architecture et la façon dont nous l'avons implémentée.
 
 \subsection{Les différents modules}
 \noindent
@@ -396,11 +396,43 @@ Pour fonctionner, ces modules ont besoin d'interagir avec l'extérieur (demande 
 Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec la clé publique du Tokenizer et donc de retrouver le PAN correspondant.\\
 Par le biais du Token Service Provider, il est possible d'étendre notre modélisation à d'autres systèmes de chiffrement, puisque ce module comporte une interface qui implémente un Tokenizer et un Detokenizer pour chacun de ces systèmes.
 
-\subsection{Les structures de données}
-Nous avons utilisé des tableau d'octets pour représenter les données définies dans la spécification car il s'agit du format standard pour échanger des données. Nous avions commencé par utiliser des chaînes de caractères mais cette modélisation ne permettait pas de manipuler les données membres à nos souhaits.
+\subsubsection{La gestion des données}
+
+\subsection{Les types de données}
+Nous avons utilisé des tableaux d'octets pour représenter les données définies dans la spécification car il s'agit du format standard pour échanger des données. Nous avions commencé par utiliser des chaînes de caractères mais cette modélisation ne permettait pas de manipuler les données membres à nos souhaits.\\
+De plus, les tableaux d'octets sont des types de données utilisés en Javacard, contrairement aux chaînes de caractères, ce qui convient à la consigne qui nous a été donnée.
 
 \subsection{Les classes utilitaires}
-Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires. Celles-ci s'occupent du stockage des clés, de petits traitements effectués sur les tableaux d'octets, etc., ce qui permet d'éviter la duplication de code et de simplifier le traitement des données. 
+Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires. Celles-ci permettent d'éviter la duplication de code et de simplifier le traitement des données.\\
+
+\noindent
+\textbf{BytesUtils}: Tous les champs de données sont concaténés dans un tableau d'octets pour constituer le message d'entrée pour la Tokenisation. Cette classe effectue un padding sur un tableau d'octets contenant le PAN. Ainsi, le champ de données réservé au PAN est toujours de la même taille, ce qui simplifie le traitement des données suivantes.\\
+
+\noindent
+\textbf{KeyUtils}: Effectue de petits traitements sur les clés.
+\begin{itemize}
+	\item Sauvegarde d'une clé publique dans le fichier \textit{public.key} dans le dossier choisi. La clé est encodée avec le certificat X509.
+	\item Sauvegarde d'une clé privée dans le fichier \textit{private.key} dans le dossier choisi. La clé est encodée avec le standard PKCS8.
+	\item Sauvegarde d'une paire de clés publique/privée grâce aux deux méthodes utilisées pour les traitements ci-dessus.
+	\item Chargement d'une clé publique dans le fichier \textit{public.key}.
+	\item Chargement d'une clé privée dans le fichier \textit{private.key}.
+	\item Chargement d'une paire de clés publique/privée grâce aux deux méthodes utilisées pour les traitements ci-dessus.
+\end{itemize}
+
+~\\
+\noindent
+\textbf{MessageUtils}: Construit le message d'entrée pour la Tokenisation en concaténant les champs de données dans un tableau d'octets, à l'aide de la classe \textit{BytesUtils}.\\
+
+\noindent
+\textbf{SocketUtils}: 
+\begin{itemize}
+	\item Lis le contenu d'une socket récupéré dans un tableau de 2048 octets.
+	\item Ecris dans une socket le contenu d'un tableau de 2048 octets.
+\end{itemize}
+
+~\\
+\noindent
+\textbf{TransactionMock}: Effectue les transformations nécessaires sur le message de sortie de la Tokenisation pour que les champs de données correspondent à ceux demandés, par la spécification EMVCo, pour le message d'entrée de la Detokenisation.
 
 
 \section{Contrôle de qualité}
