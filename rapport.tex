@@ -369,34 +369,64 @@ Le diagramme de classe ci-dessous présente l'architecture générale du projet,
 
 \begin{figure}[!ht]
     \centering
-			\includegraphics[scale=0.4]{img/architecture.png}
+			\includegraphics[scale=0.5]{img/ClassDiagramm.png}
 			\caption{\label{Architecture} Diagramme de classe de l'architecture du projet.}			
 \end{figure}
 
 \noindent
 Nous allons maintenant expliquer plus en détails cette architecture et la façon dont nous l'avons implémentée.
 
+\newpage
 \subsection{Les différents modules}
 \noindent
-\textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.\\
+\textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.5]{img/TokenizerDiagramm.png}
+			\caption{\label{Architecture} Diagramme de classe du module Tokenizer.}			
+\end{figure}
 
 \noindent
-\textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.\\
+\textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.5]{img/DetokenizerDiagramm.png}
+			\caption{\label{Architecture} Diagramme de classe du module Detokenizer.}			
+\end{figure}
 
 \noindent
-\textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.\\
+\textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.5]{img/TokenServiceProvider.png}
+			\caption{\label{Architecture} Diagramme de classe du module TokenServiceProvider.}			
+\end{figure}
 
 \noindent
 \textbf{Token Requestor}: Implémenté pour la démonstration, il interroge le Tokenizer et/ou le Detokenizer.
+
+\begin{figure}[!ht]
+    \centering
+			\includegraphics[scale=0.5]{img/TokenRequester.png}
+			\caption{\label{Architecture} Diagramme de classe du module TokenRequester.}			
+\end{figure}
 
 \subsection{La programmation côté serveur}
 Pour fonctionner, ces modules ont besoin d'interagir avec l'extérieur (demande de Tokenisation au Tokenizer, etc.). Nous avons donc crée un serveur pour la Tokenisation et un pour la Detokenisation. Nous avons aussi utilisé le Token Requestor comme client pour pouvoir envoyer des requêtes à ces serveurs.
 
 \subsubsection{AES et RSA}
 Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec la clé publique du Tokenizer et donc de retrouver le PAN correspondant.\\
-Par le biais du Token Service Provider, il est possible d'étendre notre modélisation à d'autres systèmes de chiffrement, puisque ce module comporte une interface qui implémente un Tokenizer et un Detokenizer pour chacun de ces systèmes.
+Par le biais du Token Service Provider, il est possible d'étendre notre modélisation à d'autres systèmes de chiffrement, puisque ce module comporte une interface qui implémente un Tokenizer et un Detokenizer pour chacun de ces systèmes.\\
+
+\noindent
+Nous avons testé les performances de notre implémentation avec le profiler de la JVM. Celui-ci a retourné un temps d'exécution de 34ms pour la démonstration en utilisant RSA. Nous n'avons pas testé la démonstration avec AES puisque ce système de chiffrement ne sera surement pas utilisé par la suite, du fait des inconvénients liés aux clés.
 
 \subsubsection{La gestion des données}
+Les seules données que nous stockons sont le couple clé publique / clé privée utilisé pour la Tokenisation et la Detokenisation. Ces clés sont stockées respectivement dans les fichiers \textit{public.key} et \textit{private.key} que nous avons choisi de placer dans les ressources du projet Maeven. Il est possible de mettre ces deux fichiers ailleurs, mais il faut dans ce cas changer la valeur de la variable "path" passée en paramètre des méthodes de la classe \textit{KeyUtils} (voir plus bas \textbf{Les classes utilitaires}).
+
 
 \subsection{Les types de données}
 Nous avons utilisé des tableaux d'octets pour représenter les données définies dans la spécification car il s'agit du format standard pour échanger des données. Nous avions commencé par utiliser des chaînes de caractères mais cette modélisation ne permettait pas de manipuler les données membres à nos souhaits.\\
@@ -447,6 +477,7 @@ A ce jour, 19 tests unitaires existent et ils sont tous au vert.
 Le Token Service Provider a servi à réaliser les tests d'intégration et à nous assurer du bon interfaçage entre les modules Tokenizer et Detokenizer.\\
 En résumé, nous avons crée des PAN que nous avons ensuite donnés au Token Service Provider pour que celui-ci demande au Tokenizer de tokeniser puis au Detokenizer de detokeniser, une fois les Tokens correspondants générés. A la fin, une comparaison est faite entre le PAN retrouvé après Detokenisation et le PAN de départ pour confirmer le bon fonctionnement des modules concernés. 
 
+\newpage
 \section{Démonstration finale}
 Les trois captures d'écran ci-dessous montrent les requêtes envoyées par le Token Requestor qui arrivent aux serveurs de Tokenisation et de Detokenisation, avec réception respectivement du PAN et du Token, et renvoi de ceux-ci au Token Requestor. Toutes ces requêtes sont envoyées à intervalles de temps aléatoires, au serveur qui leur correspond, pour mieux simuler une situation réelle. 
 
