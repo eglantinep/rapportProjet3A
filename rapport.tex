@@ -10,6 +10,7 @@
 \usepackage{eso-pic}
 \usepackage{fancyhdr}
 \usepackage{subcaption}
+\usepackage{listings}
 
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -379,43 +380,90 @@ Nous allons maintenant expliquer plus en détails cette architecture et la faço
 \newpage
 \subsection{Les différents modules}
 \noindent
-\textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.
+\textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.\\
+
+\noindent
+Pour cela, nous avons créé une interface \textit{Tokenizer} qui est implémentée par les classes \textit{TokenizerRSA} et \textit{TokenizerAES}. Nous pouvons donc avoir un Tokenizer pour chaque algorithme de chiffrement. Par ailleurs, la tokenisation avec AES se fait en mode "PKCS5Padding" alors que celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding". Nous avons utilisé ici la classe \textit{Cipher} de la librairie \textit{Javax}, implémentée à cet effet.\\
+Nous avons aussi créé une classe \textit{InputReader} qui permet de lire le message d'entrée de la Tokenisation et qui récupère un à un les différents champs de données.\\
+Une classe \textit{TokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{TokenizerJob}. C'est cette dernière classe qui s'occupe de Tokeniser.\\
+
+\noindent
+Toutes les relations entre ces classes sont représentées dans le diagramme de classe ci-dessous [Figure \ref{ArchitectureTokenizer}].
 
 \begin{figure}[!ht]
     \centering
-			\includegraphics[scale=0.5]{img/TokenizerDiagramm.png}
-			\caption{\label{Architecture} Diagramme de classe du module Tokenizer.}			
+			\includegraphics[scale=0.7]{img/TokenizerDiagramm.png}
+			\caption{\label{ArchitectureTokenizer} Diagramme de classe du module Tokenizer.}			
 \end{figure}
 
 \noindent
-\textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.
+\textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.\\
+
+\noindent
+Comme pour le module précédent, nous avons créé une interface \textit{Detokenizer} qui est implémentée par les classes \textit{DetokenizerRSA} et \textit{DetokenizerAES}. Nous pouvons donc avoir un Detokenizer pour chaque algorithme de chiffrement. Par ailleurs, la detokenisation avec AES se fait en mode "PKCS5Padding", et celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding", à l'image de la Tokenisation. Nous avons utilisé là aussi la classe \textit{Cipher} de la librairie \textit{Javax}.\\
+La classe \textit{InputReader} permet cette fois de lire le message d'entrée de la Detokenisation et de récupérer un à un les différents champs de données.\\
+La classe \textit{DetokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{DetokenizerJob}. Cette dernière classe s'occupe de Detokeniser.\\
+
+\noindent
+Toutes les relations entre ces classes sont représentées dans le diagramme de classe ci-dessous [Figure \ref{ArchitectureDetokenizer}].
 
 \begin{figure}[!ht]
     \centering
-			\includegraphics[scale=0.5]{img/DetokenizerDiagramm.png}
-			\caption{\label{Architecture} Diagramme de classe du module Detokenizer.}			
+			\includegraphics[scale=0.7]{img/DetokenizerDiagramm.png}
+			\caption{\label{ArchitectureDetokenizer} Diagramme de classe du module Detokenizer.}			
 \end{figure}
 
 \noindent
-\textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.
+\textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.\\
+
+\noindent
+Dans ce module, une interface \textit{TokenServiceProvider} est implémentée par une classe abstraite \textit{AbstractTokenServiceProvider} qui nous permet de factoriser la suite du code et de définir le comportement par défaut des classes qui vont en hériter. Ces classes sont, logiquement, \textit{TokenServiceProviderAES} et \textit{TokenServiceProviderRSA}. Nous pouvons donc, ici aussi, avoir un Token Service Provider pour chaque algorithme de chiffrement.\\
+Une classe \textit{TokenServiceProviderServer} lance les serveurs de Tokenisation et de detokenisation.\\
+
+\noindent
+Ce module est représenté par le schéma de la figure [Figure \ref{ArchitectureTSP}].\\
 
 \begin{figure}[!ht]
     \centering
-			\includegraphics[scale=0.5]{img/TokenServiceProvider.png}
-			\caption{\label{Architecture} Diagramme de classe du module TokenServiceProvider.}			
+			\includegraphics[scale=0.7]{img/TokenServiceProvider.png}
+			\caption{\label{ArchitectureTSP} Diagramme de classe du module TokenServiceProvider.}			
 \end{figure}
 
 \noindent
-\textbf{Token Requestor}: Implémenté pour la démonstration, il interroge le Tokenizer et/ou le Detokenizer.
+\textbf{Token Requestor}: Implémenté pour la démonstration, il interroge le Tokenizer et/ou le Detokenizer.\\
+
+\noindent
+Une classe \textit{TokenRequester} créé et lance trois threads instanciés grâce à une classe \textit{TokenRequesterJob}. Ces trois threads correspondent à trois clients qui enverront successivement des demandes de Tokenisation et de Detokenisation, et qui s'assureront que le PAN obtenu à la fin correspond bien au PAN généré aléatoirement au début. La classe \textit{TokenRequesterJob} redéfinie la méthode \textit{run()} pour les threads.\\
+
+\noindent
+Ces deux classes sont représentées sur le schéma de la figure [Figure \ref{ArchitectureTR}].
 
 \begin{figure}[!ht]
     \centering
-			\includegraphics[scale=0.5]{img/TokenRequester.png}
-			\caption{\label{Architecture} Diagramme de classe du module TokenRequester.}			
+			\includegraphics[scale=0.7]{img/TokenRequester.png}
+			\caption{\label{ArchitectureTR} Diagramme de classe du module TokenRequester.}			
 \end{figure}
 
+\newpage
 \subsection{La programmation côté serveur}
-Pour fonctionner, ces modules ont besoin d'interagir avec l'extérieur (demande de Tokenisation au Tokenizer, etc.). Nous avons donc crée un serveur pour la Tokenisation et un pour la Detokenisation. Nous avons aussi utilisé le Token Requestor comme client pour pouvoir envoyer des requêtes à ces serveurs.
+Pour fonctionner, ces modules ont besoin d'interagir avec l'extérieur (demande de Tokenisation au Tokenizer, etc.). Voilà pourquoi nous avons crée un serveur pour la Tokenisation et pour la Detokenisation. Nous avons aussi utilisé le Token Requestor comme client pour pouvoir envoyer des requêtes à ces serveurs.\\
+Tous les serveurs sont pour le moment mono-thread. Par la suite, la Tokenisation ne se fera surement pas par un serveur car le module sera embarqué sur une carte à puce. Pour la Detokenisation, il serait possible d'utiliser le multi-threading, mais cela n'était pas nécessaire pour les besoins de la démonstration.\\
+
+\noindent
+Le listing ci-dessous donne le code de la méthode \textit{main()} de la classe \textit{TokenizerServer}, et montre comment la Tokenisation est lancée côté serveur. Le principe est le même pour les trois autres modules.\\
+
+\begin{lstlisting}
+public static void main(String[] args) throws IOException {
+        if (args.length != 0) {
+            loadKey(args[0]);
+        } else {
+            loadKey();
+        }
+        ServerSocket serverSocket = new ServerSocket(2009);
+        Thread tokenizer = new Thread(new TokenizeJob(serverSocket, publicKey));
+        tokenizer.start();
+}
+\end{lstlisting}
 
 \subsubsection{AES et RSA}
 Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec la clé publique du Tokenizer et donc de retrouver le PAN correspondant.\\
