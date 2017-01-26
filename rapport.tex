@@ -71,7 +71,7 @@
         \textbf{\@author} 
     \end{center}
  
-    \vspace*{8cm}
+    \vspace*{8.5cm}
  
     \begin{center}
         \makebox[\textwidth]{\includegraphics[width=\paperwidth]{img/footer.PNG}}
@@ -131,8 +131,7 @@ Le travail qui nous a été demandé concernait surtout l'aspect bancaire, et pl
 
 \section{Introduction à la Tokenisation}
 \subsection{Définition d'un Token}
-Dans le cadre d'une transaction, un Token est une donnée "jetable", aussi appelée jeton de paiement, permettant de remplacer les données bancaires telles que le PAN (Personal Account Number).\\
-Ainsi, le processus de Tokenisation consiste à générer un Token à partir du PAN et de sa date d'expiration [Figure \ref{Tokenisation}].
+Dans le cadre d'une transaction, un Token est une donnée "jetable", aussi appelée jeton de paiement, permettant de remplacer les données bancaires telles que le PAN (Personal Account Number). Ainsi, le processus de Tokenisation consiste à générer un Token à partir du PAN et de sa date d'expiration [Figure \ref{Tokenisation}].
 
 \begin{figure}[!h]
     \centering
@@ -362,7 +361,7 @@ Le schéma qui suit représente la phase de gestion des impayés vue précédeme
 
 
 \chapter{Implémentation d'un Token Service Provider}
-La lecture de la spécification et les besoins du projet One Wave nous ont amenés à implémenter un Token Service Provider. Dans la suite de ce chapitre, nous allons présenter l'architecture de notre solution et expliquer nos choix d'implémentation.
+Grâce à la lecture de la spécification présentée au chapitre précédent, nous avons pu implémenter un Token Service Provider pour répondre aux besoins du projet One Wave. Dans la suite de ce chapitre, nous allons présenter l'architecture de notre solution et expliquer nos choix d'implémentation.
 
 \section{Architecture du projet}
 Tout est implémenté en Java, avec pour contrainte de pouvoir être embarqué sur une puce par la suite.\\
@@ -383,9 +382,7 @@ Nous allons maintenant expliquer plus en détails cette architecture et la faço
 \textbf{Tokenizer}: Génère le Token à partir du PAN, sur demande d'un Token Requestor.\\
 
 \noindent
-Pour cela, nous avons créé une interface \textit{Tokenizer} qui est implémentée par les classes \textit{TokenizerRSA} et \textit{TokenizerAES}. Nous pouvons donc avoir un Tokenizer pour chaque algorithme de chiffrement. Par ailleurs, la tokenisation avec AES se fait en mode "PKCS5Padding" alors que celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding". Nous avons utilisé ici la classe \textit{Cipher} de la librairie \textit{Javax}, implémentée à cet effet.\\
-Nous avons aussi créé une classe \textit{InputReader} qui permet de lire le message d'entrée de la Tokenisation et qui récupère un à un les différents champs de données.\\
-Une classe \textit{TokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{TokenizerJob}. C'est cette dernière classe qui s'occupe de Tokeniser.\\
+Pour cela, nous avons créé une interface \textit{Tokenizer} qui est implémentée par les classes \textit{TokenizerRSA} et \textit{TokenizerAES}. Nous pouvons donc avoir un Tokenizer pour chaque algorithme de chiffrement. Par ailleurs, la tokenisation avec AES se fait en mode "PKCS5Padding" alors que celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding". Nous avons utilisé ici la classe \textit{Cipher} de la librairie \textit{Javax}, implémentée à cet effet. Nous avons aussi créé une classe \textit{InputReader} qui permet de lire le message d'entrée de la Tokenisation et qui récupère un à un les différents champs de données. Une classe \textit{TokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{TokenizerJob}. C'est cette dernière classe qui s'occupe de Tokeniser.\\
 
 \noindent
 Toutes les relations entre ces classes sont représentées dans le diagramme de classe ci-dessous [Figure \ref{ArchitectureTokenizer}].
@@ -400,12 +397,10 @@ Toutes les relations entre ces classes sont représentées dans le diagramme de 
 \textbf{Detokenizer}: Retrouve le PAN à partir du Token sur demande d'une autorité authentifiée telle que le réseau de paiement.\\
 
 \noindent
-Comme pour le module précédent, nous avons créé une interface \textit{Detokenizer} qui est implémentée par les classes \textit{DetokenizerRSA} et \textit{DetokenizerAES}. Nous pouvons donc avoir un Detokenizer pour chaque algorithme de chiffrement. Par ailleurs, la detokenisation avec AES se fait en mode "PKCS5Padding", et celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding", à l'image de la Tokenisation. Nous avons utilisé là aussi la classe \textit{Cipher} de la librairie \textit{Javax}.\\
-La classe \textit{InputReader} permet cette fois de lire le message d'entrée de la Detokenisation et de récupérer un à un les différents champs de données.\\
-La classe \textit{DetokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{DetokenizerJob}. Cette dernière classe s'occupe de Detokeniser.\\
+Comme pour le module précédent, nous avons créé une interface \textit{Detokenizer} qui est implémentée par les classes \textit{DetokenizerRSA} et \textit{DetokenizerAES}. Nous pouvons donc avoir un Detokenizer pour chaque algorithme de chiffrement. Par ailleurs, la detokenisation avec AES se fait en mode "PKCS5Padding", et celle avec RSA se fait en mode "OAEPWithSHA-256AndMGF1Padding", à l'image de la Tokenisation. Nous avons utilisé là aussi la classe \textit{Cipher} de la librairie \textit{Javax}. La classe \textit{InputReader} permet cette fois de lire le message d'entrée de la Detokenisation et de récupérer un à un les différents champs de données. La classe \textit{DetokenizerServer} charge les clés, ouvre une socket serveur et lance un thread qui a pour routine une instance de la classe \textit{DetokenizerJob}. Cette dernière classe s'occupe de Detokeniser.\\
 
 \noindent
-Toutes les relations entre ces classes sont représentées dans le diagramme de classe ci-dessous [Figure \ref{ArchitectureDetokenizer}].
+Toutes les relations entre ces classes sont représentées dans le diagramme de classe ci-après [Figure \ref{ArchitectureDetokenizer}].
 
 \begin{figure}[!ht]
     \centering
@@ -417,8 +412,7 @@ Toutes les relations entre ces classes sont représentées dans le diagramme de 
 \textbf{Token Service Provider}: Agrège les deux modules précédents et fournit les API correspondantes.\\
 
 \noindent
-Dans ce module, une interface \textit{TokenServiceProvider} est implémentée par une classe abstraite \textit{AbstractTokenServiceProvider} qui nous permet de factoriser la suite du code et de définir le comportement par défaut des classes qui vont en hériter. Ces classes sont, logiquement, \textit{TokenServiceProviderAES} et \textit{TokenServiceProviderRSA}. Nous pouvons donc, ici aussi, avoir un Token Service Provider pour chaque algorithme de chiffrement.\\
-Une classe \textit{TokenServiceProviderServer} lance les serveurs de Tokenisation et de detokenisation.\\
+Dans ce module, une interface \textit{TokenServiceProvider} est implémentée par une classe abstraite \textit{AbstractTokenServiceProvider} qui nous permet de factoriser la suite du code et de définir le comportement par défaut des classes qui vont en hériter. Ces classes sont, logiquement, \textit{TokenServiceProviderAES} et \textit{TokenServiceProviderRSA}. Nous pouvons donc, ici aussi, avoir un Token Service Provider pour chaque algorithme de chiffrement. Une classe \textit{TokenServiceProviderServer} lance les serveurs de Tokenisation et de detokenisation.\\
 
 \noindent
 Ce module est représenté par le schéma de la figure [Figure \ref{ArchitectureTSP}].\\
@@ -504,8 +498,8 @@ Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent 
 \noindent
 \textbf{SocketUtils}: 
 \begin{itemize}
-	\item Lis le contenu du flux entrant d'une socket (InputStream) qui est ensuite récupéré dans un tableau de 2048 octets.
-	\item Ecris le contenu d'un tableau de 2048 octets dans le flux sortant d'une socket (OutputStream).
+	\item Lis le contenu du flux entrant d'une socket (InputStream) qui est ensuite récupéré dans un tableau de 2048 bits.
+	\item Ecris le contenu d'un tableau de 2048 bits dans le flux sortant d'une socket (OutputStream).
 \end{itemize}
 
 ~\\
