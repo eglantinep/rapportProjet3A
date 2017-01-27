@@ -460,7 +460,7 @@ public static void main(String[] args) throws IOException {
 \end{lstlisting}
 
 \subsubsection{AES et RSA}
-Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec la clé publique du Tokenizer et donc de retrouver le PAN correspondant.\\
+Etant donné qu' il n'y a pas de communication directe entre le Tokenizer et le Detokenizer (pas de Token Vault), il nous a fallu utiliser la cryptographie pour chiffrer les échanges de PAN et de Token entre ces deux entités. Nous avons d'abord utilisé un chiffrement AES pour des questions de performances et de taille des données échangées. Le problème avec ce système cryptographique, c'est qu'il nécessite une clé partagée, et ce pour chacun des Tokenizers. Nous nous sommes donc orientés vers le chiffrement RSA qui permet au Detokenizer de n'avoir qu'une seule clé privée, permettant de déchiffrer n'importe quel Token chiffré avec sa clé publique et donc de retrouver le PAN correspondant.\\
 Par le biais du Token Service Provider, il est possible d'étendre notre modélisation à d'autres systèmes de chiffrement, puisque ce module comporte une interface qui implémente un Tokenizer et un Detokenizer pour chacun de ces systèmes.\\
 
 \noindent
@@ -478,7 +478,7 @@ De plus, les tableaux d'octets sont des types de données utilisés en Javacard,
 Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent un certain nombre de classes utilitaires. Celles-ci permettent d'éviter la duplication de code et de simplifier le traitement des données.\\
 
 \noindent
-\textbf{BytesUtils}: Tous les champs de données sont concaténés dans un tableau d'octets pour constituer le message d'entrée pour la Tokenisation. Cette classe effectue un padding sur un tableau d'octets contenant le PAN. Ainsi, le champ de données réservé au PAN est toujours de la même taille, ce qui simplifie le traitement des données suivantes.\\
+\textbf{BytesUtils}: Tous les champs de données sont concaténés dans un tableau d'octets pour constituer le message d'entrée pour la Tokenisation. Cette classe effectue un padding sur un tableau d'octets contenant le PAN. Ce padding est fait sur les premières cases du tableau pour ne pas modifier la valeur des données déjà présentes dans le tableau. Ainsi, le champ de données réservé au PAN est toujours de la même taille, ce qui simplifie le traitement des données suivantes. En revanche, ce traitement ne tient pas compte des aspects sécuritaires, c'est-à-dire qu'il est possible que cela introduise d'éventuelles failles de sécurité.\\
 
 \noindent
 \textbf{KeyUtils}: Effectue de petits traitements sur les clés.
@@ -493,7 +493,7 @@ Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent 
 
 ~\\
 \noindent
-\textbf{MessageUtils}: Construit le message d'entrée pour la Tokenisation en concaténant les champs de données dans un tableau d'octets, à l'aide de la classe \textit{BytesUtils}.\\
+\textbf{MessageUtils}: Construit le message d'entrée pour la Tokenisation en concaténant les champs de données requis dans un tableau d'octets, à l'aide de la classe \textit{BytesUtils}.\\
 
 \noindent
 \textbf{SocketUtils}: 
@@ -505,6 +505,32 @@ Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent 
 ~\\
 \noindent
 \textbf{TransactionMock}: Effectue les transformations nécessaires sur le message de sortie de la Tokenisation pour que les champs de données correspondent à ceux demandés, par la spécification EMVCo, pour le message d'entrée de la Detokenisation.
+
+\subsection{Le fonctionnement global du projet}
+Pour lancer les serveurs de Tokenisation et de Detokenisation ainsi que les requêtes client du Token Requestor nous passons par une API. Les commandes suivantes permettent respectivement de lancer le serveur de Tokenisation, le serveur de Detokenisation et les clients:
+
+\begin{center}
+	\begin{lstlisting}
+		java -jar tokenizer.jar .
+		java -jar detokenizer.jar .
+		java -jar tokenrequester.jar
+	\end{lstlisting}
+\end{center}
+
+\noindent
+Le programme tourne alors indéfiniment, c'est-à-dire que les trois clients envoient successivement des demandes de Tokenisation et de Detokenisation jusqu'à ce qu'on arrête l'exécution manuellement. A chaque demande de Tokenisation envoyée par l'un des clients, un message d'entrée (pour la Tokenisation) est généré grâce à la classe \textit{MessageUtils}. Ce message est alors transmis au Tokenizer qui génère un Token et retourne un message de sortie conforme à ce qui est demandé dans la spécification. La classe \textit{TransactionMock} transforme ensuite ce message de sortie pour constituer le message d'entrée pour la Detokenisation. Le Detokenizer retrouve le PAN et genère à son tour un message de sortie. Là encore ce message respecte la spécification. Tous les champs de données présents dans les différents messages sont d'abord récupérés individuellement dans des tableaux d'octets puis concaténés dans un nouveau tableau d'octets grâce à la classe \textit{BytesUtils} chargée de faire les paddings nécessaires.\\
+
+\noindent 
+Pour compiler l'ensemble du projet, il faut utiliser la commande suivante:
+
+\begin{center}
+	\begin{lstlisting}
+		maeven clean package
+	\end{lstlisting}
+\end{center}
+
+\noindent
+Cela génère tous les fichier .jar de l'application et copie les fichiers de clé (public.key et private.key) dans le dossier \textit{out} à la racine du projet.
 
 
 \section{Contrôle de qualité}
