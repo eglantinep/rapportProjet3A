@@ -509,13 +509,13 @@ Nous avons jugé bon de créer un module \textit{Utils} dans lequel se trouvent 
 \subsection{Le fonctionnement global du projet}
 Pour lancer les serveurs de Tokenisation et de Detokenisation ainsi que les requêtes client du Token Requestor nous passons par une API. Les commandes suivantes permettent respectivement de lancer le serveur de Tokenisation, le serveur de Detokenisation et les clients:
 
-\begin{center}
-	\begin{lstlisting}
-		java -jar tokenizer.jar .
-		java -jar detokenizer.jar .
-		java -jar tokenrequester.jar
-	\end{lstlisting}
-\end{center}
+
+\begin{lstlisting}
+java -jar tokenizer.jar "cheminVersLeDossierContenantLesFichiersDeClef"
+java -jar detokenizer.jar "cheminVersLeDossierContenantLesFichiersDeClef"
+java -jar tokenrequester.jar
+\end{lstlisting}
+
 
 \noindent
 Le programme tourne alors indéfiniment, c'est-à-dire que les trois clients envoient successivement des demandes de Tokenisation et de Detokenisation jusqu'à ce qu'on arrête l'exécution manuellement. A chaque demande de Tokenisation envoyée par l'un des clients, un message d'entrée (pour la Tokenisation) est généré grâce à la classe \textit{MessageUtils}. Ce message est alors transmis au Tokenizer qui génère un Token et retourne un message de sortie conforme à ce qui est demandé dans la spécification. La classe \textit{TransactionMock} transforme ensuite ce message de sortie pour constituer le message d'entrée pour la Detokenisation. Le Detokenizer retrouve le PAN et genère à son tour un message de sortie. Là encore ce message respecte la spécification. Tous les champs de données présents dans les différents messages sont d'abord récupérés individuellement dans des tableaux d'octets puis concaténés dans un nouveau tableau d'octets grâce à la classe \textit{BytesUtils} chargée de faire les paddings nécessaires.\\
